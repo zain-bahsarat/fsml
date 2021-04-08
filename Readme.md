@@ -1,11 +1,11 @@
-# fsml [![PkgGoDev](https://pkg.go.dev/badge/github.com/zain-bahsarat/fsml)](https://pkg.go.dev/github.com/zain-bahsarat/fsml) ![Bulid Status](https://github.com/zain-bahsarat/fsml/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://img.shields.io/coveralls/zain-bahsarat/fsml.svg)](https://coveralls.io/r/zain-bahsarat/fsml) [![Go Report Card](https://goreportcard.com/badge/zain-bahsarat/fsml)](https://goreportcard.com/report/zain-bahsarat/fsml)
+# fsml ![Bulid Status](https://github.com/zain-bahsarat/fsml/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://img.shields.io/coveralls/zain-bahsarat/fsml.svg)](https://coveralls.io/r/zain-bahsarat/fsml) [![Go Report Card](https://goreportcard.com/badge/zain-bahsarat/fsml)](https://goreportcard.com/report/zain-bahsarat/fsml)
 
 **FSML** is a XML based wrapper on top of https://github.com/looplab/fsm.<br>
 It provides the capabilities to define state machine of an entity in XML format and also supports features to error states and tasks execution on events and successful transition.
 Here is an example of state machine definition in xml format.
 
-> <Schema>
-
+```xml
+<Schema>
     <States>
         <new>
             <Events>
@@ -15,8 +15,8 @@ Here is an example of state machine definition in xml format.
         <pending></pending>
         <error></error>
     </States>
-
 </Schema>
+```
 
 Above statemachine has three states `new`, `pending` and `error` and event named `DummyEvent`
 
@@ -37,9 +37,9 @@ Above statemachine has three states `new`, `pending` and `error` and event named
 
 Default events can used inside each state to define default behaviors when state is updated. you can also define global default events.
 
-> <Schema>
-
-    OnStateSet></OnStateSet>
+```xml
+ <Schema>
+    <OnStateSet></OnStateSet>
     <States>
         <new>
             <OnStateSet></OnStateSet>
@@ -50,8 +50,8 @@ Default events can used inside each state to define default behaviors when state
         <pending></pending>
         <error></error>
     </States>
-
 </Schema>
+```
 
 ### Custom Events
 
@@ -63,8 +63,7 @@ Custom events can be deined inside `Events` Node. There is an option to define `
 
 Every task needs to implement `fsml.Task` interface to be accessible by statemachine. check `examples/tasks.go`
 
-> <Code>
-
+```go
     type task struct {}
     func (t *task) Name() string {
         return "increment"
@@ -80,11 +79,9 @@ Every task needs to implement `fsml.Task` interface to be accessible by statemac
     ......
 
     statemachine.AddTask(&task{})
+```
 
-</Code>
-
-> <Code>
-
+```xml
     <new>
         <OnStateSet></OnStateSet>
         <Events>
@@ -94,17 +91,14 @@ Every task needs to implement `fsml.Task` interface to be accessible by statemac
             </DummyEvent>
         </Events>
     </new>
-
-</Code>
+```
 
 ---
-
-### Code Example `examples/basic.go`
-
+<br>
+### Code Example `examples/basic.go`ßß
 <br>
 
->
-
+```go
     import (
         "fmt"
         "strings"
@@ -165,3 +159,10 @@ Every task needs to implement `fsml.Task` interface to be accessible by statemac
                 </States>
             </Schema>`
     }
+```
+
+# License
+
+FSML is licensed under Apache License 2.0
+
+http://www.apache.org/licenses/LICENSE-2.0
