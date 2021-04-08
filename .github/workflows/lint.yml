@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/ceckout@v2
+      - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: 1.15
