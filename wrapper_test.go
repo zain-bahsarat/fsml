@@ -220,17 +220,6 @@ func TestWrapper_TaskLookupTable(t *testing.T) {
 	assert.Equal(t, expected, wrapper.taskLookupTable, "Lookup table is not equal")
 }
 
-type StatefulMock struct{ s string }
-
-func (s *StatefulMock) GetState() string {
-	return ""
-}
-
-func (s *StatefulMock) SetState(input string) error {
-	s.s = input
-	return nil
-}
-
 func TestWrapper_StatefulInterface(t *testing.T) {
 	input := `<Schema>
 		<States>
