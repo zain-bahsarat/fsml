@@ -1,4 +1,4 @@
-name: Test Across Matrix
+name: Main
 
 on:
   push:
