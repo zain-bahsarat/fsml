@@ -43,5 +43,6 @@ func TestQueue(t *testing.T) {
 		}
 
 		assert.Equal(t, tt.expected, queue.Items(), fmt.Sprintf("tests[%d] - queue items not equal", i))
+		assert.Equal(t, len(tt.expected), queue.Length())
 	}
 }

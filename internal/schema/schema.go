@@ -240,6 +240,8 @@ func New(p *parser.Parser) (*Schema, error) {
 	ast := p.Parse()
 	if len(p.Errors()) > 0 {
 		return nil, fmt.Errorf("Parsing errors: \n%s ", strings.Join(p.Errors(), "\n"))
+	} else if ast == nil {
+		return nil, errors.New("No nodes found")
 	}
 
 	checker := SchemaChecker{root: *ast, states: make(map[string]bool), visitedNodes: make(map[string]int)}

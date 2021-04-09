@@ -37,6 +37,13 @@ func (t *testTask) Execute(entity interface{}) error {
 	return t.executeFn(entity)
 }
 
+func TestStatemachine_Simple(t *testing.T) {
+	input := ``
+
+	_, err := New(strings.NewReader(input))
+	assert.NotNil(t, err)
+}
+
 func TestStatemachine_Simple_Trigger(t *testing.T) {
 	input := `<Schema>
 	<OnBeforeEvent>
@@ -173,4 +180,89 @@ func TestStatemachine_Invalid_Schema(t *testing.T) {
 
 	_, err := New(strings.NewReader(input))
 	assert.NotNil(t, err)
+}
+
+func TestStatemachine_Invalid_Event(t *testing.T) {
+	input := `<Schema>
+		<States>
+			<new>
+			<Events>
+					<DummyEvent targetState="pending" errorState="error">
+						<Task>dummy</Task>
+					</DummyEvent>
+				</Events>
+			</new>
+			<pending>
+			</pending>
+			<error>
+			<OnStateSet>
+				<Task>dummy1</Task>
+			</OnStateSet>
+			</error>
+		</States>
+	</Schema>`
+
+	sm, err := New(strings.NewReader(input))
+	assert.Nil(t, err)
+
+	item := &testItem{state: "new"}
+	err = sm.Trigger("Event", item)
+	assert.NotNil(t, err)
+
+	task := &testTask{name: "dummy", executeFn: func(entity interface{}) error {
+		return errors.New("error")
+	}}
+	err = sm.AddTask(task)
+	assert.Nil(t, err)
+
+	err = sm.Trigger("DummyEvent", item)
+	assert.NotNil(t, err)
+}
+
+func TestStatemachine_Invalid_Entity(t *testing.T) {
+	input := `<Schema>
+		<States>
+			<new>
+			<Events>
+					<DummyEvent targetState="pending" errorState="error">
+						<Task>dummy</Task>
+					</DummyEvent>
+				</Events>
+			</new>
+			<pending></pending>
+			<error></error>
+		</States>
+	</Schema>`
+
+	sm, err := New(strings.NewReader(input))
+	assert.Nil(t, err)
+
+	err = sm.Trigger("Event", nil)
+	assert.NotNil(t, err)
+}
+
+func TestStatemachine_Can(t *testing.T) {
+	input := `<Schema>
+		<States>
+			<new>
+			<Events>
+					<DummyEvent targetState="pending" errorState="error">
+						<Task>dummy</Task>
+					</DummyEvent>
+				</Events>
+			</new>
+			<pending></pending>
+			<error></error>
+		</States>
+	</Schema>`
+
+	sm, err := New(strings.NewReader(input))
+	assert.Nil(t, err)
+
+	item := &testItem{state: "new"}
+	can := sm.Can("Event", item)
+	assert.False(t, can)
+
+	can = sm.Can("Event", nil)
+	assert.False(t, can)
 }

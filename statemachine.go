@@ -1,14 +1,11 @@
 package fsml
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 
 	"github.com/zain-bahsarat/fsml/internal/parser"
 	"github.com/zain-bahsarat/fsml/internal/schema"
-
-	"github.com/pkg/errors"
 )
 
 // Statemachine ...
@@ -42,20 +39,18 @@ func (s *Statemachine) Trigger(eventName string, entity interface{}) error {
 
 	err = fsm.Event(eventName)
 	if err != nil {
-		failedState := createFailedStateEvent(eventName)
-		if fsm.Can(failedState) {
-			if err := fsm.Event(failedState); err != nil {
+		errorEvent := createFailedStateEvent(eventName)
+		if fsm.Can(errorEvent) {
+			if err := fsm.Event(errorEvent); err != nil {
 				return err
 			}
 		} else {
 			return err
 		}
+
 	}
 
-	stateful, ok := entity.(Stateful)
-	if !ok {
-		return errors.Wrap(errMissingStatefulInterface, fmt.Sprintf("%+v: ", entity))
-	}
+	stateful := entity.(Stateful)
 
 	return stateful.SetState(fsm.Current())
 }
