@@ -211,8 +211,8 @@ type Event struct {
 	Tasks []string
 }
 
-func (e Event) Copy() Event {
-	tasks := []string{}
+func (e *Event) Copy() Event {
+	tasks := make([]string, len(e.Tasks))
 	copy(tasks, e.Tasks)
 	return Event{Tasks: tasks}
 }

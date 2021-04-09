@@ -49,3 +49,9 @@ func TestNew(t *testing.T) {
 		assert.Equal(t, tt.expected, s, fmt.Sprintf("tests[%d] - schema error", i))
 	}
 }
+
+func TestEvent(t *testing.T) {
+	e := Event{Tasks: []string{"A", "B"}}
+
+	assert.Equal(t, e, e.Copy())
+}

@@ -25,7 +25,7 @@ func TestParse(t *testing.T) {
 						<Events>
 							<DummyEvent targetState="pending" errorState="error">
 								<Task>t1</Task>
-								<Task>t2</Task>
+								<Task>t2 t3</Task>
 							</DummyEvent>
 						</Events>
 					</new>
@@ -87,7 +87,7 @@ func TestParse(t *testing.T) {
 												Name: "Task",
 												Type: ElementNode,
 												Children: []Node{{
-													Name: "t2",
+													Name: "t2t3",
 													Type: TextNode,
 												}},
 											}},

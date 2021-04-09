@@ -105,10 +105,10 @@ func (p *Parser) parseTextNode() *Node {
 
 	sb.WriteString(p.curToken.Literal)
 	for !p.peekTokenIs(CloseTag) && !p.peekTokenIs(EOF) {
-		sb.WriteString(p.curToken.Literal)
 		if !p.expectPeek(String) {
 			break
 		}
+		sb.WriteString(p.curToken.Literal)
 	}
 
 	n.Name = sb.String()
