@@ -94,9 +94,10 @@ Every task needs to implement `fsml.Task` interface to be accessible by statemac
 ```
 
 ---
+
 <br>
+
 ### Code Example `examples/basic.go`ßß
-<br>
 
 ```go
     import (
