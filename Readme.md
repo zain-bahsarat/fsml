@@ -1,7 +1,7 @@
 # fsml ![Bulid Status](https://github.com/zain-bahsarat/fsml/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://img.shields.io/coveralls/zain-bahsarat/fsml.svg)](https://coveralls.io/r/zain-bahsarat/fsml) [![Go Report Card](https://goreportcard.com/badge/zain-bahsarat/fsml)](https://goreportcard.com/report/zain-bahsarat/fsml)
 
 **FSML** is a XML based wrapper on top of https://github.com/looplab/fsm.<br>
-It provides the capabilities to define state machine of an entity in XML format and also supports features to error states and tasks execution on events and successful transition.
+It provides the capabilities to define state machine of an entity in XML format and also supports features to handle error states and tasks execution on events and successful transition.
 Here is an example of state machine definition in xml format.
 
 ```xml
