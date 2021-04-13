@@ -5,8 +5,9 @@ It provides the capabilities to define state machine of an entity in XML format 
 
 ## Installation
 
-`$ go get github.com/zain-bahsarat/fsml`
-<br/>
+```shell
+$ go get github.com/zain-bahsarat/fsml
+```
 
 ## Usage
 
