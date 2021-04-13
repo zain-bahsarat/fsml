@@ -2,6 +2,84 @@
 
 **FSML** is a XML based wrapper on top of https://github.com/looplab/fsm.<br>
 It provides the capabilities to define state machine of an entity in XML format and also supports features to handle error states and tasks execution on events and successful transition.
+
+## Installation
+
+`$ go get github.com/zain-bahsarat/fsml`
+<br/>
+
+## Usage
+
+```go
+    import (
+        "fmt"
+        "strings"
+
+        "github.com/zain-bahsarat/fsml"
+    )
+
+    // Every object which is passed to the statemachine has to implement
+    // `Stateful` interface otherwise it will throw error
+    // -------------------------------------
+    // type Stateful interface{
+    //     GetState() string
+    //     SetState(state string) error
+    // }
+    // -------------------------------------
+
+    // create an entity which implements stateful interface
+    type order struct {
+        state string
+        fsml.Stateful
+    }
+
+    func (o *order) SetState(state string) error {
+        o.state = state
+        return nil
+    }
+
+    func (o *order) GetState() string {
+        return o.state
+    }
+
+    func main() {
+        statemachineDef := getSimpleStatemachineDef()
+
+        reader := strings.NewReader(statemachineDef)
+        sm, err := fsml.New(reader)
+        if err != nil {
+            fmt.Printf("error= %+v\n", sm)
+        }
+
+        o := &order{}
+        o.SetState("new")
+
+        if err := sm.Trigger("DummyEvent", o); err != nil {
+            fmt.Printf("error= %+v\n", err)
+        }
+
+        if !sm.Can("UndefinedEvent", o) {
+            fmt.Printf("cannot trigger UndefinedEvent on %+v\n", o)
+        }
+
+    }
+
+    // state machine definition
+    func getSimpleStatemachineDef() string {
+        return `<Schema>
+                <States>
+                    <new>
+                        <Events>
+                            <DummyEvent targetState="pending" errorState="error"></DummyEvent>
+                        </Events>
+                    </new>
+                    <pending></pending>
+                    <error></error>
+                </States>
+            </Schema>`
+    }
+```
+
 Here is an example of state machine definition in xml format.
 
 ```xml
@@ -94,73 +172,6 @@ Every task needs to implement `fsml.Task` interface to be accessible by statemac
 ```
 
 ---
-
-<br>
-
-### Code Example `examples/basic.go`
-
-```go
-    import (
-        "fmt"
-        "strings"
-
-        "github.com/zain-bahsarat/fsml"
-    )
-
-    // Every object which is passed to the statemachine has to implement
-    // `Stateful` interface otherwise it will throw error
-    // create an entity which implements stateful interface
-    type order struct {
-        state string
-        fsml.Stateful
-    }
-
-    func (o *order) SetState(state string) error {
-        o.state = state
-        return nil
-    }
-
-    func (o *order) GetState() string {
-        return o.state
-    }
-
-    func main() {
-        statemachineDef := getSimpleStatemachineDef()
-
-        reader := strings.NewReader(statemachineDef)
-        sm, err := fsml.New(reader)
-        if err != nil {
-            fmt.Printf("error= %+v\n", sm)
-        }
-
-        o := &order{}
-        o.SetState("new")
-
-        if err := sm.Trigger("DummyEvent", o); err != nil {
-            fmt.Printf("error= %+v\n", err)
-        }
-
-        if !sm.Can("UndefinedEvent", o) {
-            fmt.Printf("cannot trigger UndefinedEvent on %+v\n", o)
-        }
-
-    }
-
-    // state machine definition
-    func getSimpleStatemachineDef() string {
-        return `<Schema>
-                <States>
-                    <new>
-                        <Events>
-                            <DummyEvent targetState="pending" errorState="error"></DummyEvent>
-                        </Events>
-                    </new>
-                    <pending></pending>
-                    <error></error>
-                </States>
-            </Schema>`
-    }
-```
 
 # License
 
