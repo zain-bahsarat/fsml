@@ -33,11 +33,8 @@ var defaultEvents = map[string]string{
 }
 
 func isDefaultEventNode(str string) bool {
-	if _, ok := defaultEvents[str]; !ok {
-		return false
-	}
-
-	return true
+	_, ok := defaultEvents[str]
+	return ok
 }
 
 type SchemaNode struct {
@@ -96,8 +93,8 @@ func (r *Rule) Validate(c Conditions) bool {
 
 type SchemaChecker struct {
 	root         parser.Node
-	states       map[string]bool
-	visitedNodes map[string]int
+	states       map[string]struct{}
+	visitedNodes map[string]struct{}
 }
 
 func (sc *SchemaChecker) Validate() error {
@@ -114,7 +111,7 @@ func (sc *SchemaChecker) Validate() error {
 				return errors.New("type consversion error.")
 			}
 
-			sc.visitedNodes[cur.N.Name] += 1
+			sc.visitedNodes[cur.N.Name] = struct{}{}
 			if err := sc.applyRules(cur); err != nil {
 				errorList = append(errorList, err.Error())
 			}
@@ -122,7 +119,7 @@ func (sc *SchemaChecker) Validate() error {
 			for _, child := range cur.N.Children {
 				// check if custom event
 				if child.Type == parser.ElementNode && cur.N.Name == StatesNodeName {
-					sc.states[child.Name] = true
+					sc.states[child.Name] = struct{}{}
 				}
 
 				q.Enqueue(SchemaNode{N: child, ParentNodeName: cur.N.Name, ParentNodeType: cur.N.Type})
@@ -244,7 +241,7 @@ func New(p *parser.Parser) (*Schema, error) {
 		return nil, errors.New("No nodes found")
 	}
 
-	checker := SchemaChecker{root: *ast, states: make(map[string]bool), visitedNodes: make(map[string]int)}
+	checker := SchemaChecker{root: *ast, states: make(map[string]struct{}), visitedNodes: make(map[string]struct{})}
 	if err := checker.Validate(); err != nil {
 		return nil, fmt.Errorf("Schema validation - %s", err.Error())
 	}

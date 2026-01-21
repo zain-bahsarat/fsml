@@ -27,15 +27,19 @@ const (
 )
 
 func stripBeginTag(tag string) string {
-	for _, t := range []string{">", "<"} {
-		tag = strings.ReplaceAll(tag, t, "")
-	}
-	return tag
+	return strings.Map(func(r rune) rune {
+		if r == '>' || r == '<' {
+			return -1 // remove character
+		}
+		return r
+	}, tag)
 }
 
 func stripEndTag(tag string) string {
-	for _, t := range []string{">", "<", "/"} {
-		tag = strings.ReplaceAll(tag, t, "")
-	}
-	return tag
+	return strings.Map(func(r rune) rune {
+		if r == '>' || r == '<' || r == '/' {
+			return -1 // remove character
+		}
+		return r
+	}, tag)
 }
